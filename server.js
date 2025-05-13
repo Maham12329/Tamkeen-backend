@@ -38,7 +38,7 @@ if (!fs.existsSync(certificateDir)) {
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://tamkeen-frontend.vercel.app",
     credentials: true,
   })
 );
