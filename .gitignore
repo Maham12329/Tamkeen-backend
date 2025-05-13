@@ -1,6 +1,5 @@
 # dependencies
 .env
-uploads
 node_modules
 
 npm-debug.log*
