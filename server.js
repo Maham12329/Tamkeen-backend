@@ -30,7 +30,7 @@ app.use(cookieParser());
 
 // After other middleware
 const fs = require('fs');
-const certificateDir = path.join(__dirname, 'uploads/certificates');
+const certificateDir = path.join('/tmp', 'uploads', 'certificates');
 if (!fs.existsSync(certificateDir)) {
   fs.mkdirSync(certificateDir, { recursive: true });
 }
