@@ -38,14 +38,15 @@ if (!fs.existsSync(certificateDir)) {
 
 app.use(
   cors({
+       // origin: "http://localhost:3000",
     origin: "https://tamkeen-frontend.vercel.app",
     credentials: true,
   })
 );
 
 // Add this line after your CORS configuration
-app.use('/uploads', express.static('/tmp/uploads'));
-//app.use("/", express.static(path.join(__dirname, "uploads")));
+//app.use('/uploads', express.static('/tmp/uploads'));
+app.use("/", express.static(path.join(__dirname, "uploads")));
 
 
 app.get("/test", (req, res) => {

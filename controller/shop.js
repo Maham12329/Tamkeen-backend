@@ -61,24 +61,90 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
 
     const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
 
-    try {
-      await sendMail({
-        email: seller.email,
-        subject: "ACTIVATE YOUR SHOP",
-        message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
-      });
-      res.status(201).json({
-        success: true,
-        message: `please check your email:- ${seller.email} to activate your shop!`,
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
-  }
-});
+ try {
+  // Plain text version for fallback
+  const activationMessage = `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}
 
+This link is valid for 24 hours. If you didn't request this, please ignore this email.`;
+
+  // HTML version with styling based on theme
+  const htmlActivationMessage = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activate Your Shop</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #faf7f7; color: #5a4336;">
+  <!-- Header with logo area and gradient background -->
+  <div style="background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: #ffffff; margin: 0; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Your Shop Name</h1>
+  </div>
+  
+  <!-- Main content area with card gradient effect -->
+  <div style="padding: 35px 25px; border-left: 1px solid #e6d8d8; border-right: 1px solid #e6d8d8; border-bottom: 1px solid #e6d8d8; background-image: linear-gradient(to bottom, #ffffff, #f5f0f0); border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="color: #c8a4a5; margin-top: 0; font-size: 24px;">Activate Your Shop</h2>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Hello <strong>${seller.name}</strong>,</p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Thank you for registering your shop with us! To begin selling your products and reaching customers, please activate your shop by clicking the button below:</p>
+    
+    <!-- Action Button with gradient -->
+    <div style="text-align: center; margin: 35px 0;">
+      <a href="${activationUrl}" style="background-image: linear-gradient(to right, #c8a4a5, #d48c8f); color: #ffffff; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;">Activate Your Shop</a>
+    </div>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Or copy and paste this link into your browser:</p>
+    
+    <p style="font-size: 14px; line-height: 1.5; color: #5a4336; background-color: #f5f0f0; padding: 12px; border-radius: 6px; word-break: break-all; border-left: 4px solid #c8a4a5;">
+      ${activationUrl}
+    </p>
+    
+    <div style="margin: 30px 0; padding: 20px; border-radius: 6px; background-image: linear-gradient(to right, #f5f0f0, #e6d8d8);">
+      <p style="font-size: 16px; line-height: 1.6; color: #5a4336; margin-top: 0;">Please note:</p>
+      <ul style="font-size: 16px; line-height: 1.6; color: #5a4336; padding-left: 20px;">
+        <li>This activation link will expire in 24 hours</li>
+        <li>If you didn't register a shop with us, you can safely ignore this email</li>
+        <li>For security reasons, please don't share this link with anyone</li>
+      </ul>
+    </div>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">If you have any questions or need assistance, our seller support team is here to help!</p>
+
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6d8d8; text-align: center;">
+      <p style="font-size: 14px; color: #b38d82; margin-bottom: 5px;">Start growing your business</p>
+      <p style="font-size: 16px; font-weight: bold; color: #c8a4a5; margin-top: 0;">Join our seller community today!</p>
+    </div>
+  </div>
+  
+  <!-- Footer area with soft gradient -->
+  <div style="background-image: linear-gradient(to right, #e6d8d8, #c8a4a5); padding: 20px; text-align: center; font-size: 14px; color: #ffffff; border-radius: 0 0 8px 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.03);">
+    <p style="margin: 0 0 10px 0;">© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+    <p style="margin: 0;">This is an automated message from our secure notification system.</p>
+  </div>
+</body>
+</html>
+  `;
+
+  await sendMail({
+    email: seller.email,
+    subject: "Activate Your Shop - Start Selling Today!",
+    message: activationMessage,
+    html: htmlActivationMessage
+  });
+  
+  res.status(201).json({
+    success: true,
+    message: `Please check your email: ${seller.email} to activate your shop!`,
+  });
+} catch (error) {
+  return next(new ErrorHandler(error.message, 500));
+}
+} catch (error) {
+  return next(new ErrorHandler(error.message, 400));
+}
+});
 // create activation token
 const createActivationToken = (seller) => {
   return jwt.sign(seller, process.env.ACTIVATION_SECRET, {

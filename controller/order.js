@@ -50,35 +50,114 @@ router.post(
             .map((item) => `- ${item.name} x${item.qty}`)
             .join("\n");
   
-          const message = `
-  Hi ${user.name},
+ const message = `
+Hi ${user.name},
+
+Thank you for your order! Here are the details:
+
+Items:
+${productList}
+
+Total Price: ${totalPrice}
+Shipping Address: ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.country}
+
+We will notify you once your order is shipped.
+
+Best regards,  
+Your Team
+`;
+
+        // Create the HTML version with styling based on theme
+        const htmlMessage = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #faf7f7; color: #5a4336;">
+  <!-- Header with logo area and gradient background -->
+  <div style="background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: #ffffff; margin: 0; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Order Confirmation</h1>
+  </div>
   
-  Thank you for your order! Here are the details:
+  <!-- Main content area with card gradient effect -->
+  <div style="padding: 35px 25px; border-left: 1px solid #e6d8d8; border-right: 1px solid #e6d8d8; border-bottom: 1px solid #e6d8d8; background-image: linear-gradient(to bottom, #ffffff, #f5f0f0); border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="color: #c8a4a5; margin-top: 0; font-size: 24px;">Thank You for Your Purchase!</h2>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Hello <strong>${user.name}</strong>,</p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">We're thrilled to confirm that your order has been received and is being processed. Here are your order details:</p>
+    
+    <!-- Order details section -->
+    <div style="margin: 30px 0; padding: 25px; border-radius: 8px; background-image: linear-gradient(to right, #f5f0f0, #e6d8d8);">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 20px;">Order Summary</h3>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 20px;">
+        <h4 style="color: #5a4336; margin-top: 0; font-size: 18px; border-bottom: 1px solid #e6d8d8; padding-bottom: 10px;">Items Purchased:</h4>
+        <div style="font-size: 15px; line-height: 1.5; color: #5a4336;">
+          ${productList.replace(/\n/g, '<br>')}
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; padding: 15px 0; border-top: 1px solid #d48c8f; margin-top: 5px;">
+        <span style="font-size: 18px; font-weight: bold; color: #5a4336;">Total:</span>
+        <span style="font-size: 18px; font-weight: bold; color: #c8a4a5;">${totalPrice}</span>
+      </div>
+    </div>
+    
+    <!-- Shipping details section -->
+    <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; margin: 25px 0; border-left: 4px solid #c8a4a5;">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 20px;">Shipping Information</h3>
+      <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin-bottom: 5px;">
+        <strong>Address:</strong> ${shippingAddress.address}
+      </p>
+      <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin-bottom: 5px;">
+        <strong>City:</strong> ${shippingAddress.city}
+      </p>
+      <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin-bottom: 0;">
+        <strong>Country:</strong> ${shippingAddress.country}
+      </p>
+    </div>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">We're preparing your items for shipment and will notify you once they're on the way. If you have any questions about your order, please don't hesitate to contact our customer support team.</p>
+
+    <!-- Next steps section -->
+    <div style="margin: 30px 0; padding: 20px; border-radius: 6px; background-color: #f5f0f0; border-left: 4px solid #d48c8f;">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 18px;">What's Next?</h3>
+      <ul style="font-size: 16px; line-height: 1.6; color: #5a4336; padding-left: 20px;">
+        <li>You'll receive a shipping confirmation email once your order is on its way</li>
+        <li>Track your package using the tracking information that will be provided</li>
+        <li>Contact our support team if you need to make any changes to your order</li>
+      </ul>
+    </div>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6d8d8; text-align: center;">
+      <p style="font-size: 14px; color: #b38d82; margin-bottom: 5px;">Thank you for shopping with us!</p>
+      <p style="font-size: 16px; font-weight: bold; color: #c8a4a5; margin-top: 0;">We appreciate your business</p>
+    </div>
+  </div>
   
-  Items:
-  ${productList}
-  
-  Total Price: ${totalPrice}
-  Shipping Address: ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.country}
-  
-  We will notify you once your order is shipped.
-  
-  Best regards,  
-  Your Team
-  `;
-  
-          try {
-            await sendMail({
-              email: user.email,
-              subject: "Order Confirmation - Thank you for your purchase!",
-              message,
-            });
-            console.log(`Confirmation email sent to ${user.email}`);
-          } catch (err) {
-            console.error("Error sending confirmation email:", err);
-          }
+  <!-- Footer area with soft gradient -->
+  <div style="background-image: linear-gradient(to right, #e6d8d8, #c8a4a5); padding: 20px; text-align: center; font-size: 14px; color: #ffffff; border-radius: 0 0 8px 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.03);">
+    <p style="margin: 0 0 10px 0;">© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+    <p style="margin: 0;">This email confirms your recent purchase.</p>
+  </div>
+</body>
+</html>`;
+
+        try {
+          await sendMail({
+            email: user.email,
+            subject: "Order Confirmation - Thank you for your purchase!",
+            message,
+            html: htmlMessage
+          });
+          console.log(`Confirmation email sent to ${user.email}`);
+        } catch (err) {
+          console.error("Error sending confirmation email:", err);
         }
-  
+      }
 
       res.status(201).json({
         success: true,
@@ -89,6 +168,7 @@ router.post(
     }
   })
 );
+
 async function updateProductStock(productId, quantity) {
   const product = await Product.findById(productId);
 

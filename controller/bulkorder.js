@@ -67,11 +67,90 @@ if (shop.email) {
   Budget: ${budget}
   Delivery Deadline: ${deliveryDeadline}`;
 
+  const htmlMessage = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Bulk Order Request</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #faf7f7; color: #5a4336;">
+  <!-- Header with logo area and gradient background -->
+  <div style="background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: #ffffff; margin: 0; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">New Bulk Order Request</h1>
+  </div>
+  
+  <!-- Main content area with card gradient effect -->
+  <div style="padding: 35px 25px; border-left: 1px solid #e6d8d8; border-right: 1px solid #e6d8d8; border-bottom: 1px solid #e6d8d8; background-image: linear-gradient(to bottom, #ffffff, #f5f0f0); border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="color: #c8a4a5; margin-top: 0; font-size: 24px;">New Bulk Order Opportunity!</h2>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Hello,</p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">A new bulk order has been created for your product category. Please review the details below and submit your offer if you're interested.</p>
+    
+    <!-- Order details section -->
+    <div style="margin: 30px 0; padding: 25px; border-radius: 8px; background-image: linear-gradient(to right, #f5f0f0, #e6d8d8);">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 20px;">Bulk Order Details</h3>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Product Name:</strong> ${productName}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Quantity:</strong> ${quantity}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Budget:</strong> ${budget}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Delivery Deadline:</strong> ${deliveryDeadline}
+        </p>
+      </div>
+    </div>
+    
+    <!-- Next steps section -->
+    <div style="margin: 30px 0; padding: 20px; border-radius: 6px; background-color: #f5f0f0; border-left: 4px solid #d48c8f;">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 18px;">What's Next?</h3>
+      <ul style="font-size: 16px; line-height: 1.6; color: #5a4336; padding-left: 20px;">
+        <li>Login to your seller dashboard to view the complete RFQ details</li>
+        <li>Submit your best offer with competitive pricing and terms</li>
+        <li>Specify your delivery timeline and any special conditions</li>
+      </ul>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="#" style="display: inline-block; background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); color: white; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">View Full RFQ Details</a>
+    </div>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6d8d8; text-align: center;">
+      <p style="font-size: 14px; color: #b38d82; margin-bottom: 5px;">Don't miss this opportunity!</p>
+      <p style="font-size: 16px; font-weight: bold; color: #c8a4a5; margin-top: 0;">Submit your offer today</p>
+    </div>
+  </div>
+  
+  <!-- Footer area with soft gradient -->
+  <div style="background-image: linear-gradient(to right, #e6d8d8, #c8a4a5); padding: 20px; text-align: center; font-size: 14px; color: #ffffff; border-radius: 0 0 8px 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.03);">
+    <p style="margin: 0 0 10px 0;">© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+    <p style="margin: 0;">This email is regarding a new bulk order request on our platform.</p>
+  </div>
+</body>
+</html>`;
+
   try {
     await sendMail({
-      email: shop.email, // Use shop's actual email
+      email: shop.email,
       subject: `New Bulk Order Request - ${productName}`,
       message,
+      html: htmlMessage
     });
     console.log(`Email sent to ${shop.email}`);
   } catch (error) {
@@ -182,6 +261,7 @@ router.post("/submit-offer/:rfqId", catchAsyncErrors(async (req, res, next) => {
 
   // Notify the user via email
   const user = bulkOrder.userId;
+if (user?.email) {
   const message = `
     Dear ${user.name},
     
@@ -197,17 +277,96 @@ router.post("/submit-offer/:rfqId", catchAsyncErrors(async (req, res, next) => {
     Your Team
   `;
 
+  const htmlMessage = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Offer Received</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #faf7f7; color: #5a4336;">
+  <!-- Header with logo area and gradient background -->
+  <div style="background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: #ffffff; margin: 0; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">New Offer Received!</h1>
+  </div>
+  
+  <!-- Main content area with card gradient effect -->
+  <div style="padding: 35px 25px; border-left: 1px solid #e6d8d8; border-right: 1px solid #e6d8d8; border-bottom: 1px solid #e6d8d8; background-image: linear-gradient(to bottom, #ffffff, #f5f0f0); border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="color: #c8a4a5; margin-top: 0; font-size: 24px;">Great News!</h2>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Hello ${user.name},</p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">An offer has been submitted for your bulk order. Here are the details:</p>
+    
+    <!-- Order details section -->
+    <div style="margin: 30px 0; padding: 25px; border-radius: 8px; background-image: linear-gradient(to right, #f5f0f0, #e6d8d8);">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 20px;">Offer Details</h3>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Product Name:</strong> ${bulkOrder.productName}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Offered Price:</strong> ${price}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Delivery Time:</strong> ${deliveryTime}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Terms:</strong> ${terms}
+        </p>
+      </div>
+    </div>
+    
+    <!-- Next steps section -->
+    <div style="margin: 30px 0; padding: 20px; border-radius: 6px; background-color: #f5f0f0; border-left: 4px solid #d48c8f;">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 18px;">What's Next?</h3>
+      <ul style="font-size: 16px; line-height: 1.6; color: #5a4336; padding-left: 20px;">
+        <li>Review the complete offer details in your dashboard</li>
+        <li>Compare with other offers if available</li>
+        <li>Accept the offer if it meets your requirements</li>
+      </ul>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="#" style="display: inline-block; background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); color: white; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">View Full Offer Details</a>
+    </div>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6d8d8; text-align: center;">
+      <p style="font-size: 14px; color: #b38d82; margin-bottom: 5px;">Thank you for using our platform!</p>
+      <p style="font-size: 16px; font-weight: bold; color: #c8a4a5; margin-top: 0;">We're here to help you find the best suppliers</p>
+    </div>
+  </div>
+  
+  <!-- Footer area with soft gradient -->
+  <div style="background-image: linear-gradient(to right, #e6d8d8, #c8a4a5); padding: 20px; text-align: center; font-size: 14px; color: #ffffff; border-radius: 0 0 8px 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.03);">
+    <p style="margin: 0 0 10px 0;">© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+    <p style="margin: 0;">This email is regarding an offer for your bulk order request.</p>
+  </div>
+</body>
+</html>`;
+
   try {
     await sendMail({
       email: user.email,
       subject: `New Offer for Your Bulk Order - ${bulkOrder.productName}`,
       message,
+      html: htmlMessage
     });
     console.log(`Notification email sent to user: ${user.email}`);
   } catch (error) {
     console.error(`Error sending notification email to user: ${error.message}`);
   }
-
+}
 
   res.status(200).json({
     success: true,
@@ -344,31 +503,112 @@ router.post(
   // Notify the seller via email
   const shop = await Shop.findById(rfq.shopId); // Fetch the shop details
   if (shop && shop.email) {
-    const sellerMessage = `
-      Dear ${shop.name},
-      
-      Congratulations! Your offer for the bulk order has been accepted:
-      - Product Name: ${bulkOrder.productName}
-      - Accepted Price: ${rfq.price}
-      - Quantity: ${bulkOrder.quantity}
-      - Delivery Deadline: ${bulkOrder.deliveryDeadline}
+  const sellerMessage = `
+    Dear ${shop.name},
+    
+    Congratulations! Your offer for the bulk order has been accepted:
+    - Product Name: ${bulkOrder.productName}
+    - Accepted Price: ${rfq.price}
+    - Quantity: ${bulkOrder.quantity}
+    - Delivery Deadline: ${bulkOrder.deliveryDeadline}
 
-      Please proceed with the necessary actions to fulfill this order.
-      
-      Best regards,
-      Your Team
-    `;
+    Please proceed with the necessary actions to fulfill this order.
+    
+    Best regards,
+    Your Team
+  `;
 
-    try {
-      await sendMail({
-        email: shop.email,
-        subject: `Offer Accepted for Bulk Order - ${bulkOrder.productName}`,
-        message: sellerMessage,
-      });
-      console.log(`Notification email sent to seller: ${shop.email}`);
-    } catch (error) {
-      console.error(`Error sending notification email to seller: ${error.message}`);
-    }
+  const htmlMessage = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offer Accepted!</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #faf7f7; color: #5a4336;">
+  <!-- Header with logo area and gradient background -->
+  <div style="background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: #ffffff; margin: 0; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Congratulations!</h1>
+  </div>
+  
+  <!-- Main content area with card gradient effect -->
+  <div style="padding: 35px 25px; border-left: 1px solid #e6d8d8; border-right: 1px solid #e6d8d8; border-bottom: 1px solid #e6d8d8; background-image: linear-gradient(to bottom, #ffffff, #f5f0f0); border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="color: #c8a4a5; margin-top: 0; font-size: 24px;">Your Offer Has Been Accepted!</h2>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Dear ${shop.name},</p>
+    
+    <p style="font-size: 16px; line-height: 1.6; color: #5a4336;">Congratulations! Your offer for the bulk order has been accepted and payment has been confirmed. It's time to begin order fulfillment!</p>
+    
+    <!-- Order details section -->
+    <div style="margin: 30px 0; padding: 25px; border-radius: 8px; background-image: linear-gradient(to right, #f5f0f0, #e6d8d8);">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 20px;">Order Details</h3>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Product Name:</strong> ${bulkOrder.productName}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Accepted Price:</strong> ${rfq.price}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Quantity:</strong> ${bulkOrder.quantity}
+        </p>
+      </div>
+      
+      <div style="background-color: #ffffff; border-radius: 6px; padding: 15px;">
+        <p style="font-size: 16px; line-height: 1.5; color: #5a4336; margin: 5px 0;">
+          <strong style="color: #c8a4a5;">Delivery Deadline:</strong> ${bulkOrder.deliveryDeadline}
+        </p>
+      </div>
+    </div>
+    
+    <!-- Next steps section -->
+    <div style="margin: 30px 0; padding: 20px; border-radius: 6px; background-color: #f5f0f0; border-left: 4px solid #d48c8f;">
+      <h3 style="color: #c8a4a5; margin-top: 0; font-size: 18px;">Next Steps</h3>
+      <ul style="font-size: 16px; line-height: 1.6; color: #5a4336; padding-left: 20px;">
+        <li>Begin production and prepare the order for shipping</li>
+        <li>Update the order status as you progress</li>
+        <li>Contact the buyer for any clarifications if needed</li>
+        <li>Ensure timely delivery according to the agreed terms</li>
+      </ul>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="#" style="display: inline-block; background-image: linear-gradient(135deg, #c8a4a5 0%, #d48c8f 100%); color: white; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">View Order Details</a>
+    </div>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6d8d8; text-align: center;">
+      <p style="font-size: 14px; color: #b38d82; margin-bottom: 5px;">Thank you for your business!</p>
+      <p style="font-size: 16px; font-weight: bold; color: #c8a4a5; margin-top: 0;">We look forward to a successful fulfillment</p>
+    </div>
+  </div>
+  
+  <!-- Footer area with soft gradient -->
+  <div style="background-image: linear-gradient(to right, #e6d8d8, #c8a4a5); padding: 20px; text-align: center; font-size: 14px; color: #ffffff; border-radius: 0 0 8px 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.03);">
+    <p style="margin: 0 0 10px 0;">© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+    <p style="margin: 0;">This email confirms the acceptance of your offer for a bulk order.</p>
+  </div>
+</body>
+</html>`;
+
+  try {
+    await sendMail({
+      email: shop.email,
+      subject: `Offer Accepted for Bulk Order - ${bulkOrder.productName}`,
+      message: sellerMessage,
+      html: htmlMessage
+    });
+    console.log(`Notification email sent to seller: ${shop.email}`);
+  } catch (error) {
+    console.error(`Error sending notification email to seller: ${error.message}`);
+  }
+
   } else {
     console.warn(`No email defined for the seller's shop with ID: ${rfq.shopId}`);
   }
